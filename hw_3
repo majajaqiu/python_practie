@@ -1,0 +1,55 @@
+import mysql.connector
+
+test2019 = open("Test2019.txt", "r", encoding='utf-8')
+#11 to 31 is student answer, 15 to 35 standard answer
+#1859 number
+all_answer = test2019.readlines()
+
+tmpgrade = []
+for i in range( 0, 1859 ):
+    tmpgrade.append(0.0)
+for i in range( 1, 1859 ):
+    for j in range( 11, 31 ):
+        if all_answer[i][j] == '*':
+            tmpgrade[i] += 0
+        elif all_answer[i][j] == all_answer[0][j+4]:
+            tmpgrade[i] += 5
+        else:
+            tmpgrade[i] -= 1.25
+    if tmpgrade[i] < 0:
+        tmpgrade[i] = 0
+#計算成績
+
+standard_answer = all_answer[0] #存標準答案
+all_answer.pop(0) #從所有資料去掉標準答案
+
+tmpgrade.pop(0)
+grade = tmpgrade
+grade.sort()
+#排序分數
+
+top = grade[1635]
+front = grade[1394]
+mean = grade[929]
+rear = grade[465]
+bottom = grade[223]
+print( top, front, mean, rear, bottom )
+#算 頂標 到 底標
+
+student_id = []
+student_name = []
+
+for i in range(0, len(all_answer)):
+    student_id.append(all_answer[i][0:8])
+#存學生 id
+for i in range(0, len(all_answer)):
+    student_name.append(all_answer[i][8:11])
+#存學生 name
+
+mydb = mysql.connector.connect(
+    host="140.136.150.100",
+    user="root",
+    database="larry"
+)
+mycursor = mydb.cursor()
+mycursor.execute("CREATE DATABASE larry")
